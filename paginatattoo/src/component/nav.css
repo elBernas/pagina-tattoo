@@ -1,0 +1,5 @@
+.site-header{background:#111;color:#fff;padding:12px 0}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;max-width:1000px;margin:0 auto;padding:0 16px}
+.brand{margin:0;font-size:1.25rem}
+.main-nav a{color:#fff;margin-left:12px;text-decoration:none}
+.main-nav a:hover{text-decoration:underline}
