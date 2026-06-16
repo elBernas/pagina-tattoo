@@ -2,7 +2,7 @@ const KEY = 'tattoo_images'
 
 function defaultImages() {
   return [
-    { id: Date.now(), title: 'Muestra', url: '/src/assets/hero.png' },
+    { id: Date.now(), title: 'Muestra', url: '/src/assets/images/logo.jpeg' },
   ]
 }
 

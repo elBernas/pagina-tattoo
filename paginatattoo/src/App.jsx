@@ -1,8 +1,8 @@
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import Nav from './component/Nav'
-import Gallery from './component/Gallery'
 import Admin from './component/Admin'
+import Home from './component/Home'
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <Nav />
       <main>
         <Routes>
-          <Route path="/" element={<Gallery />} />
+          <Route path="/" element={<Home />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
