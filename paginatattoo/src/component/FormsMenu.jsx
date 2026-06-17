@@ -1,5 +1,4 @@
 import React from 'react'
-import './studio.css'
 
 // Now this component only renders buttons that open modals via handlers
 export default function FormsMenu({openSignup,openLogin,openContact}){

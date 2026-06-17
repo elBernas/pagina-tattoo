@@ -1,43 +1,41 @@
-import React, { useState, useEffect } from 'react'
-import './studio.css'
+import React, { useState, useEffect, useRef } from 'react'
+import Modal from './Modal'
 import AccessibilityPanel from './AccessibilityPanel'
 import SignupForm from './SignupForm'
 import LoginForm from './LoginForm'
 import ContactForm from './ContactForm'
 
-export default function Header({onSignup,onLogin,onMessage,users=[]}){
+export default function Header({onSignup,onLogin,onMessage,users=[], contrast=false, fontSize=16, onToggleContrast, onIncrease, onDecrease, onReset}){
   const [open,setOpen] = useState(false)
-  const [contrast,setContrast] = useState(false)
-  const [fontSize,setFontSize] = useState(16)
   const [formsOpen,setFormsOpen] = useState(false)
   const [activeForm,setActiveForm] = useState('signup')
-
-  useEffect(()=>{
-    // apply contrast
-    if(contrast) document.documentElement.classList.add('high-contrast')
-    else document.documentElement.classList.remove('high-contrast')
-    // apply font size via CSS variable on root
-    document.documentElement.style.setProperty('--root-font-size', `${fontSize}px`)
-    // apply body class to use the variable
-    if(!document.body.classList.contains('root-font')) document.body.classList.add('root-font')
-  },[contrast,fontSize])
+  const inactivityTimer = useRef(null)
+  const interacted = useRef(false)
 
   function toggleOpen(){ setOpen(o=>!o) }
-  function onToggleContrast(){ setContrast(c=>!c) }
-  function increase(){ setFontSize(s=>Math.min(24,s+1)) }
-  function decrease(){ setFontSize(s=>Math.max(12,s-1)) }
-  function reset(){ setFontSize(16); setContrast(false) }
+  function handleToggleContrast(){ onToggleContrast && onToggleContrast() }
+  function increase(){ onIncrease && onIncrease() }
+  function decrease(){ onDecrease && onDecrease() }
+  function reset(){ onReset && onReset() }
 
   function openForms(which){ setActiveForm(which); setFormsOpen(true) }
   function closeForms(){ setFormsOpen(false) }
 
+  function clearInactivity(){ if(inactivityTimer.current){ clearTimeout(inactivityTimer.current); inactivityTimer.current = null } }
+  function startInactivity(){ interacted.current = false; clearInactivity(); inactivityTimer.current = setTimeout(()=>{ if(!interacted.current) closeForms() }, 10000) }
+  function handleActivity(){ interacted.current = true; clearInactivity() }
+
+  useEffect(()=>{
+    if(formsOpen) startInactivity()
+    return ()=> clearInactivity()
+  },[formsOpen])
+
   return (
     <header className="studio-header" role="banner">
-      <div className="brand">
-        <img src="/src/assets/images/logo.jpeg" alt="Umbral logo" style={{height:48,borderRadius:6,objectFit:'cover'}}/>
-        <div>
-          <h1>Umbral Tattoo Studio</h1>
-          <div style={{color:'var(--muted)',fontSize:12}}>Tatuajes • Arte • Tradición</div>
+      <div className="brand header-brand">
+        <img src="/src/assets/images/banner.jpg" alt="Banner Umbral" className="header-logo" />
+        <div className="brand-text">
+          <div style={{color:'var(--muted)',fontSize:22}}>Tatuajes • Arte • Tradición</div>
         </div>
       </div>
       <div style={{position:'absolute',right:16,top:12}}>
@@ -50,7 +48,7 @@ export default function Header({onSignup,onLogin,onMessage,users=[]}){
         {open && (
           <AccessibilityPanel
             contrast={contrast}
-            onToggleContrast={onToggleContrast}
+            onToggleContrast={handleToggleContrast}
             fontSize={fontSize}
             onIncrease={increase}
             onDecrease={decrease}
@@ -59,7 +57,7 @@ export default function Header({onSignup,onLogin,onMessage,users=[]}){
         )}
 
         {formsOpen && (
-          <div className="header-forms-panel" role="region" aria-label="Formularios en header">
+          <Modal open={formsOpen} onClose={closeForms} title={activeForm==='signup' ? 'Inscripción' : activeForm==='login' ? 'Login' : 'Contacto'} onActivity={handleActivity}>
             <div style={{display:'flex',gap:8,marginBottom:8}}>
               <button className="btn" onClick={()=>setActiveForm('signup')}>Inscripción</button>
               <button className="btn" onClick={()=>setActiveForm('login')}>Login</button>
@@ -71,7 +69,7 @@ export default function Header({onSignup,onLogin,onMessage,users=[]}){
               {activeForm==='login' && <LoginForm users={users} onLogin={(u)=>{ onLogin && onLogin(u); closeForms() }} />}
               {activeForm==='contact' && <ContactForm onMessage={(m)=>{ onMessage && onMessage(m); closeForms() }} />}
             </div>
-          </div>
+          </Modal>
         )}
       </div>
     </header>

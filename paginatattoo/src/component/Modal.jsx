@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react'
-import './studio.css'
 
-export default function Modal({open,onClose,title,children}){
+export default function Modal({open,onClose,title,children,onActivity}){
   useEffect(()=>{
     function onKey(e){ if(e.key==='Escape') onClose && onClose() }
-    if(open){ document.body.style.overflow='hidden'; window.addEventListener('keydown',onKey) }
-    return ()=>{ document.body.style.overflow=''; window.removeEventListener('keydown',onKey) }
+    if(open){ window.addEventListener('keydown',onKey) }
+    return ()=>{ window.removeEventListener('keydown',onKey) }
   },[open,onClose])
 
   if(!open) return null
 
   return (
     <div className="modal-overlay" role="dialog" aria-modal="true" aria-label={title} onClick={(e)=>{ if(e.target.classList.contains('modal-overlay')) onClose && onClose() }}>
-      <div className="modal-content">
+      <div className="modal-content" tabIndex={-1} onClick={()=>onActivity && onActivity()} onKeyDown={()=>onActivity && onActivity()} onInput={()=>onActivity && onActivity()}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
           <h3 className="gold" style={{margin:0}}>{title}</h3>
           <button className="btn" onClick={onClose} aria-label="Cerrar">Cerrar</button>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import './studio.css'
 
 export default function LoginForm({users=[],onLogin}){
   const [form,setForm] = useState({email:'',password:''})

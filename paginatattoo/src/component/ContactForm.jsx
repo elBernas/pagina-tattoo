@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import './studio.css'
 
 function sanitize(str){
   return String(str).replace(/[&<>"']/g, (s)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]))

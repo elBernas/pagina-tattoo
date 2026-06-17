@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import './studio.css'
 
 export default function Carousel({images=[]}){
   const [index,setIndex] = useState(0)
