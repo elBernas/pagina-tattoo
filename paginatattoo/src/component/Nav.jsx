@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import React, { useState, useRef, useEffect } from 'react'
 
-export default function Nav({ users = [], logged = null, onLogout }) {
+export default function Nav({ users = [], logged = null, onLogout, adminEmail }) {
   const [open, setOpen] = useState(false)
   const panelRef = useRef(null)
 
@@ -19,7 +19,7 @@ export default function Nav({ users = [], logged = null, onLogout }) {
         <h1 className="brand">Tatuajes</h1>
         <nav className="main-nav">
           <Link to="/">Inicio</Link>
-          <Link to="/admin">Administración</Link>
+          {logged && adminEmail && logged.email === adminEmail && <Link to="/admin">Administración</Link>}
         </nav>
         <div className="nav-users" ref={panelRef}>
           <button className="nav-users-btn btn" aria-expanded={open} aria-haspopup="true" onClick={toggle}>Usuarios ({users.length})</button>

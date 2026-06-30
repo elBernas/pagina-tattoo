@@ -1,5 +1,14 @@
 import React, { useState } from 'react'
 
+async function hashPassword(pw){
+  if(!pw) return ''
+  const enc = new TextEncoder()
+  const data = enc.encode(pw)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('')
+}
+
 export default function LoginForm({users=[],onLogin}){
   const [form,setForm] = useState({email:'',password:''})
   const [error,setError] = useState('')
@@ -9,13 +18,17 @@ export default function LoginForm({users=[],onLogin}){
     setForm(f=>({ ...f, [name]: value }))
   }
 
-  function handleSubmit(e){
+  async function handleSubmit(e){
     e.preventDefault()
     setError('')
     if(!form.email || !form.password){ setError('Campos requeridos'); return }
-    // simple auth: check email exists
     const found = users.find(u=>u.email===form.email)
     if(!found){ setError('Usuario no encontrado'); return }
+    // if stored passwordHash exists, verify it
+    if(found.passwordHash){
+      const hash = await hashPassword(form.password)
+      if(hash !== found.passwordHash){ setError('Contraseña incorrecta'); return }
+    }
     onLogin && onLogin(found)
     setForm({email:'',password:''})
   }

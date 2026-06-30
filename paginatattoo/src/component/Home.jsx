@@ -3,6 +3,8 @@ import Header from './Header'
 import Banner from './Banner'
 import Carousel from './Carousel'
 import Footer from './Footer'
+import LocationSearch from './LocationSearch'
+import Gallery from './Gallery'
 
 export default function Home({ contrast, fontSize, onToggleContrast, onIncrease, onDecrease, onReset, users = [], onSignup, onLogin, onMessage, logged = null }){
   const [modal, setModal] = useState({ which: null })
@@ -26,9 +28,13 @@ export default function Home({ contrast, fontSize, onToggleContrast, onIncrease,
               <h3 className="gold">Bienvenido a Umbral</h3>
               <p style={{color:'var(--muted)'}}>Estudio dedicado al tatuaje artístico. Navega el carrusel, inscríbete o envía un mensaje.</p>
             </section>
+            <section className="studio-panel" style={{marginTop:16}}>
+              <h3 className="gold">Galería de tatuajes</h3>
+              <Gallery />
+            </section>
           </div>
           <aside>
-            {/* Users panel moved to Nav */}
+            <LocationSearch />
           </aside>
         </div>
         <Footer />
